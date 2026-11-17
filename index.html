@@ -119,23 +119,23 @@
                 <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
                     <div>
                         <span class="text-xs text-gray-400 block mb-1">第 1 場</span>
-                        <input type="number" id="run-0" placeholder="原始量" oninput="handleRunInput()" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
+                        <input type="number" id="run-0" placeholder="原始量" oninput="handleRunInput(0)" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
                     </div>
                     <div>
                         <span class="text-xs text-gray-400 block mb-1">第 2 場</span>
-                        <input type="number" id="run-1" placeholder="原始量" oninput="handleRunInput()" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
+                        <input type="number" id="run-1" placeholder="原始量" oninput="handleRunInput(1)" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
                     </div>
                     <div>
                         <span class="text-xs text-gray-400 block mb-1">第 3 場</span>
-                        <input type="number" id="run-2" placeholder="原始量" oninput="handleRunInput()" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
+                        <input type="number" id="run-2" placeholder="原始量" oninput="handleRunInput(2)" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
                     </div>
                     <div>
                         <span class="text-xs text-gray-400 block mb-1">第 4 場</span>
-                        <input type="number" id="run-3" placeholder="原始量" oninput="handleRunInput()" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
+                        <input type="number" id="run-3" placeholder="原始量" oninput="handleRunInput(3)" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
                     </div>
                     <div>
                         <span class="text-xs text-gray-400 block mb-1">第 5 場</span>
-                        <input type="number" id="run-4" placeholder="原始量" oninput="handleRunInput()" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
+                        <input type="number" id="run-4" placeholder="原始量" oninput="handleRunInput(4)" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm text-center font-mono focus:outline-none focus:border-emerald-500">
                     </div>
                 </div>
             </div>
@@ -145,7 +145,7 @@
                 <!-- 平均每場獲得數量 -->
                 <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 shadow-lg space-y-3">
                     <div class="flex items-center justify-between">
-                        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">平均每場獲得數量 (含VIP×3)</label>
+                        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">平均每場獲得數量</label>
                         <span class="text-[10px] text-gray-400">可逆向推算</span>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
@@ -163,7 +163,7 @@
                 <!-- 總獲得寶石數量 -->
                 <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 shadow-lg space-y-3">
                     <div class="flex items-center justify-between">
-                        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">總獲得寶石數量 (含VIP×3)</label>
+                        <label class="text-xs font-semibold text-gray-300 uppercase tracking-wider">總獲得寶石數量</label>
                         <span class="text-[10px] text-gray-400">可逆向推算</span>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
@@ -173,7 +173,7 @@
                         </div>
                         <div class="bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-2.5 text-center">
                             <span class="text-[10px] text-emerald-400 block mb-0.5">含 VIP ×3</span>
-                            <input type="number" id="total-vip" placeholder="例如: 1050" oninput="handleTotalInput('vip')" class="w-full bg-gray-900/90 border border-emerald-500/50 rounded-lg py-1.5 px-2 text-center text-emerald-300 text-sm font-mono focus:outline-none focus:border-emerald-500">
+                            <input type="number" id="total-vip" placeholder="例如: 1050" oninput="handleTotalInput('total')" class="w-full bg-gray-900/90 border border-emerald-500/50 rounded-lg py-1.5 px-2 text-center text-emerald-300 text-sm font-mono focus:outline-none focus:border-emerald-500">
                         </div>
                     </div>
                 </div>
@@ -193,9 +193,9 @@
                 <div class="font-semibold text-gray-300 flex items-center gap-1.5 mb-1">
                     <i class="fa-solid fa-circle-info text-emerald-400"></i> 計算規則與使用說明
                 </div>
-                <p>• <strong>X 與 Y 計算</strong>：輸入當天開始寶石數量 $X$ 與最後打完寶石數量 $Y$，系統將自動計算總獲得量 ($Y - X$) 並換算平均與各項數值。</p>
-                <p>• <strong>VIP ×3 加成</strong>：系統會自動將五場原始掉落量乘以 3 計算出總獲得與平均數量。</p>
-                <p>• <strong>雙向推算與防呆</strong>：支援從平均或總獲得進行逆向推算；若同時填寫場次與總量發生矛盾時，系統將即時顯示衝突警告。</p>
+                <p>• <strong>智慧鎖定與分配</strong>：輸入 $X$ 與 $Y$ 後，未手動填寫的場次會自動均分剩餘量；手動修改過的場次會被鎖定保護不被覆蓋。</p>
+                <p>• <strong>VIP ×3 加成</strong>：系統自動將五場原始掉落量加總乘 3 得到總獲得量。</p>
+                <p>• <strong>防呆檢測</strong>：當 5 場總和與 $Y - X$ 發生矛盾時，會即時顯示衝突警告。</p>
             </div>
 
             <!-- 操作按鈕 -->
@@ -277,6 +277,9 @@
     <script>
         let records = JSON.parse(localStorage.getItem('earth_cleaning_records') || '{}');
         let currentChart = null;
+        
+        // 追蹤每場是否為使用者手動修改過 (鎖定保護)
+        let userModifiedRuns = [false, false, false, false, false];
 
         document.addEventListener('DOMContentLoaded', () => {
             const todayStr = getLocalDateString(new Date());
@@ -321,6 +324,7 @@
                 startGems: isNaN(startGems) ? null : startGems,
                 endGems: isNaN(endGems) ? null : endGems,
                 runs,
+                userModifiedRuns: [...userModifiedRuns],
                 avgRaw: isNaN(avgRaw) ? null : avgRaw,
                 avgVip: isNaN(avgVip) ? null : avgVip,
                 totalRaw: isNaN(totalRaw) ? null : totalRaw,
@@ -341,118 +345,124 @@
 
         let isUpdating = false;
 
-        function updateUIValues(data, errorText = null) {
+        // 核心計算引擎：支援鎖定與智慧補齊
+        function recalculateAndRender(overrideRuns = null) {
             if (isUpdating) return;
             isUpdating = true;
 
-            if (data.startGems !== null) document.getElementById('start-gems').value = data.startGems;
-            if (data.endGems !== null) document.getElementById('end-gems').value = data.endGems;
-            
-            data.runs.forEach((val, i) => {
-                document.getElementById(`run-${i}`).value = val !== null ? val : '';
-            });
-
-            document.getElementById('avg-raw').value = data.avgRaw !== null ? Number(data.avgRaw.toFixed(2)) : '';
-            document.getElementById('avg-vip').value = data.avgVip !== null ? Number(data.avgVip.toFixed(2)) : '';
-            document.getElementById('total-raw').value = data.totalRaw !== null ? Number(data.totalRaw.toFixed(2)) : '';
-            document.getElementById('total-vip').value = data.totalVip !== null ? Number(data.totalVip.toFixed(2)) : '';
-
-            showError(errorText);
-            isUpdating = false;
-        }
-
-        // 1. 當輸入 Start (X) / End (Y) 時的計算
-        function handleStartEndInput() {
-            if (isUpdating) return;
             const start = parseFloat(document.getElementById('start-gems').value);
             const end = parseFloat(document.getElementById('end-gems').value);
-            const runs = [];
+
+            // 1. 取得當前 5 場的數值與手動狀態
+            let runs = [];
             for (let i = 0; i < 5; i++) {
-                const val = parseFloat(document.getElementById(`run-${i}`).value);
-                runs.push(isNaN(val) ? null : val);
+                if (overrideRuns && overrideRuns[i] !== undefined) {
+                    runs.push(overrideRuns[i]);
+                } else {
+                    const val = parseFloat(document.getElementById(`run-${i}`).value);
+                    runs.push(isNaN(val) ? null : val);
+                }
             }
 
-            let error = null;
             let totalVip = null, totalRaw = null, avgVip = null, avgRaw = null;
+            let error = null;
 
+            // 如果有填 X 和 Y，計算出目標總量 (Raw)
+            let targetTotalRaw = null;
             if (!isNaN(start) && !isNaN(end)) {
                 totalVip = end - start;
                 totalRaw = totalVip / 3;
+                targetTotalRaw = totalRaw;
                 avgVip = totalVip / 5;
                 avgRaw = avgVip / 3;
 
                 if (totalVip < 0) {
                     error = "注意：結束寶石數量小於開始數量，差值為負數。";
                 }
+            }
 
-                // 檢查是否與已填寫的場次總和衝突
-                const filledRunsSum = runs.reduce((acc, cur) => acc + (cur !== null ? cur * 3 : 0), 0);
-                const filledCount = runs.filter(v => v !== null).length;
-                if (filledCount === 5 && Math.abs(filledRunsSum - totalVip) > 1e-5) {
-                    error = `資料衝突：5場原始掉落量總和×3 (${filledRunsSum}) 與 (最後數量 - 開始數量) (${totalVip}) 不符！`;
+            // 2. 智慧補齊邏輯：若有目標總量 (X&Y)，自動填補未被手動修改的格子
+            if (targetTotalRaw !== null) {
+                // 計算已被使用者手動填寫的總和與個數
+                let modifiedSum = 0;
+                let emptyIndices = [];
+
+                for (let i = 0; i < 5; i++) {
+                    if (userModifiedRuns[i] && runs[i] !== null) {
+                        modifiedSum += runs[i];
+                    } else {
+                        emptyIndices.push(i);
+                    }
+                }
+
+                if (modifiedSum > targetTotalRaw) {
+                    error = `資料衝突：手動填寫的場次總和 (${modifiedSum * 3}) 已超過 (結束 - 開始) 的總獲得量 (${totalVip})！`;
+                } else if (emptyIndices.length > 0) {
+                    const remainingRaw = targetTotalRaw - modifiedSum;
+                    const fillValue = remainingRaw / emptyIndices.length;
+                    emptyIndices.forEach(i => {
+                        runs[i] = fillValue >= 0 ? fillValue : 0;
+                    });
+                }
+            } else {
+                // 如果沒有填 X 和 Y，但有填部分場次，則用場次反推總量
+                const filledVals = runs.filter(v => v !== null);
+                if (filledVals.length > 0) {
+                    const sumRaw = runs.reduce((acc, cur) => acc + (cur !== null ? cur : 0), 0);
+                    totalRaw = sumRaw;
+                    totalVip = sumRaw * 3;
+                    avgRaw = sumRaw / 5;
+                    avgVip = avgRaw * 3;
                 }
             }
 
-            // 如果沒有填 Start/End，但有填 5 場
+            // 檢查 5 場全部填完時與 X&Y 是否衝突
             const filledCount = runs.filter(v => v !== null).length;
-            if (isNaN(start) || isNaN(end)) {
-                if (filledCount > 0) {
-                    const sumVip = runs.reduce((acc, cur) => acc + (cur !== null ? cur * 3 : 0), 0);
-                    totalVip = sumVip;
-                    totalRaw = sumVip / 3;
-                    avgVip = sumVip / 5;
-                    avgRaw = avgVip / 3;
+            if (filledCount === 5 && !isNaN(start) && !isNaN(end)) {
+                const sumVip = runs.reduce((acc, cur) => acc + cur * 3, 0);
+                if (Math.abs(sumVip - (end - start)) > 1e-5) {
+                    error = `資料衝突：5場總量×3 (${sumVip}) 與 (最後數量 - 開始數量) (${end - start}) 不符！`;
                 }
             }
 
-            updateUIValues({
-                startGems: isNaN(start) ? null : start,
-                endGems: isNaN(end) ? null : end,
-                runs,
-                avgRaw, avgVip, totalRaw, totalVip
-            }, error);
-        }
-
-        // 2. 當輸入每場原始量時的計算
-        function handleRunInput() {
-            if (isUpdating) return;
-            const start = parseFloat(document.getElementById('start-gems').value);
-            const end = parseFloat(document.getElementById('end-gems').value);
-            const runs = [];
+            // 3. 更新介面 DOM
             for (let i = 0; i < 5; i++) {
-                const val = parseFloat(document.getElementById(`run-${i}`).value);
-                runs.push(isNaN(val) ? null : val);
-            }
-
-            let error = null;
-            let totalVip = null, totalRaw = null, avgVip = null, avgRaw = null;
-
-            const filledCount = runs.filter(v => v !== null).length;
-            const sumVip = runs.reduce((acc, cur) => acc + (cur !== null ? cur * 3 : 0), 0);
-
-            if (filledCount > 0) {
-                totalVip = sumVip;
-                totalRaw = sumVip / 3;
-                avgVip = sumVip / 5;
-                avgRaw = avgVip / 3;
-            }
-
-            if (!isNaN(start) && !isNaN(end)) {
-                const expectedTotal = end - start;
-                if (filledCount === 5 && Math.abs(sumVip - expectedTotal) > 1e-5) {
-                    error = `資料衝突：5場總量×3 (${sumVip}) 與 (結束數量 - 開始數量) (${expectedTotal}) 不符！`;
+                const inputEl = document.getElementById(`run-${i}`);
+                inputEl.value = runs[i] !== null ? Number(runs[i].toFixed(2)) : '';
+                // 視覺提示：標示哪些是使用者手動鎖定的欄位
+                if (userModifiedRuns[i]) {
+                    inputEl.classList.add('border-emerald-500/80', 'bg-emerald-950/20');
+                } else {
+                    inputEl.classList.remove('border-emerald-500/80', 'bg-emerald-950/20');
                 }
             }
 
-            updateUIValues({
-                startGems: isNaN(start) ? null : start,
-                endGems: isNaN(end) ? null : end,
-                runs,
-                avgRaw, avgVip, totalRaw, totalVip
-            }, error);
+            document.getElementById('avg-raw').value = avgRaw !== null ? Number(avgRaw.toFixed(2)) : '';
+            document.getElementById('avg-vip').value = avgVip !== null ? Number(avgVip.toFixed(2)) : '';
+            document.getElementById('total-raw').value = totalRaw !== null ? Number(totalRaw.toFixed(2)) : '';
+            document.getElementById('total-vip').value = totalVip !== null ? Number(totalVip.toFixed(2)) : '';
+
+            showError(error);
+            isUpdating = false;
         }
 
-        // 3. 當輸入平均數值時的逆向推算
+        // 事件：輸入 X 或 Y
+        function handleStartEndInput() {
+            recalculateAndRender();
+        }
+
+        // 事件：使用者手動輸入某個場次 (觸發鎖定該格)
+        function handleRunInput(index) {
+            const val = parseFloat(document.getElementById(`run-${index}`).value);
+            if (isNaN(val)) {
+                userModifiedRuns[index] = false;
+            } else {
+                userModifiedRuns[index] = true; // 標記為手動輸入並鎖定
+            }
+            recalculateAndRender();
+        }
+
+        // 事件：平均數逆向推算
         function handleAverageInput(type) {
             if (isUpdating) return;
             let avgVip = parseFloat(document.getElementById('avg-vip').value);
@@ -466,28 +476,19 @@
                 avgVip = null; avgRaw = null;
             }
 
-            const totalVip = avgVip !== null ? avgVip * 5 : null;
-            const totalRaw = avgRaw !== null ? avgRaw * 5 : null;
-            const runs = [null, null, null, null, null];
-
-            const start = parseFloat(document.getElementById('start-gems').value);
-            const end = parseFloat(document.getElementById('end-gems').value);
-
-            updateUIValues({
-                startGems: isNaN(start) ? null : start,
-                endGems: isNaN(end) ? null : end,
-                runs,
-                avgRaw, avgVip, totalRaw, totalVip
-            }, null);
+            const singleRunVal = avgRaw;
+            userModifiedRuns = [true, true, true, true, true]; // 視同全數手動設定
+            const runs = [singleRunVal, singleRunVal, singleRunVal, singleRunVal, singleRunVal];
+            recalculateAndRender(runs);
         }
 
-        // 4. 當輸入總獲得數值時的逆向推算
+        // 事件：總獲得數逆向推算
         function handleTotalInput(type) {
             if (isUpdating) return;
             let totalVip = parseFloat(document.getElementById('total-vip').value);
             let totalRaw = parseFloat(document.getElementById('total-raw').value);
 
-            if (type === 'vip' && !isNaN(totalVip)) {
+            if (type === 'total' && !isNaN(totalVip)) {
                 totalRaw = totalVip / 3;
             } else if (type === 'raw' && !isNaN(totalRaw)) {
                 totalVip = totalRaw * 3;
@@ -495,34 +496,20 @@
                 totalVip = null; totalRaw = null;
             }
 
-            const avgVip = totalVip !== null ? totalVip / 5 : null;
-            const avgRaw = totalRaw !== null ? totalRaw / 5 : null;
-            const runs = [null, null, null, null, null];
-
-            const start = parseFloat(document.getElementById('start-gems').value);
-            const end = parseFloat(document.getElementById('end-gems').value);
-
-            updateUIValues({
-                startGems: isNaN(start) ? null : start,
-                endGems: isNaN(end) ? null : end,
-                runs,
-                avgRaw, avgVip, totalRaw, totalVip
-            }, null);
+            const singleRunVal = totalRaw !== null ? totalRaw / 5 : null;
+            userModifiedRuns = [true, true, true, true, true];
+            const runs = [singleRunVal, singleRunVal, singleRunVal, singleRunVal, singleRunVal];
+            recalculateAndRender(runs);
         }
 
         function loadDateRecord() {
             const date = document.getElementById('record-date').value;
             const rec = records[date];
             if (rec) {
-                updateUIValues({
-                    startGems: rec.startGems,
-                    endGems: rec.endGems,
-                    runs: rec.runs,
-                    avgRaw: rec.avgRaw,
-                    avgVip: rec.avgVip,
-                    totalRaw: rec.totalRaw,
-                    totalVip: rec.totalVip
-                });
+                document.getElementById('start-gems').value = rec.startGems !== null ? rec.startGems : '';
+                document.getElementById('end-gems').value = rec.endGems !== null ? rec.endGems : '';
+                userModifiedRuns = rec.userModifiedRuns ? [...rec.userModifiedRuns] : [false, false, false, false, false];
+                recalculateAndRender(rec.runs);
             } else {
                 clearCurrentForm(false);
             }
@@ -546,6 +533,7 @@
             }
             document.getElementById('start-gems').value = '';
             document.getElementById('end-gems').value = '';
+            userModifiedRuns = [false, false, false, false, false];
             for(let i=0; i<5; i++) document.getElementById(`run-${i}`).value = '';
             document.getElementById('avg-raw').value = '';
             document.getElementById('avg-vip').value = '';
