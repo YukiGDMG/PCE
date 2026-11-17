@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- LZ-String 壓縮演算法 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -269,6 +271,39 @@
                         <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
                     </label>
                 </div>
+
+                <!-- 文字代碼快速轉移區塊 (使用壓縮演算法) -->
+                <div class="border-t border-gray-800 pt-4 space-y-3">
+                    <h4 class="text-xs font-semibold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-code text-emerald-400"></i> 文字代碼快速轉移 (跨裝置複製貼上)
+                    </h4>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        透過前端壓縮演算法將所有資料轉為短代碼，方便直接透過 LINE 或其他通訊軟體複製貼上轉移至手機或其他裝置！
+                    </p>
+                    
+                    <!-- 產生代碼區 -->
+                    <div class="space-y-2">
+                        <button onclick="generateCompressedCode()" class="w-full bg-gray-800 hover:bg-gray-700 text-emerald-400 font-semibold py-2.5 px-4 rounded-xl border border-emerald-500/30 transition flex items-center justify-center gap-2 text-xs">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 產生壓縮備份代碼
+                        </button>
+                        <div class="relative">
+                            <textarea id="export-code-box" readonly placeholder="點擊上方按鈕後，此處會產生壓縮代碼..." class="w-full h-20 bg-gray-800/80 border border-gray-700 rounded-xl p-3 text-xs text-emerald-300 font-mono focus:outline-none resize-none"></textarea>
+                            <button onclick="copyExportCode()" class="absolute top-2 right-2 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] px-2.5 py-1 rounded-lg shadow transition flex items-center gap-1">
+                                <i class="fa-solid fa-copy"></i> 複製
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 還原代碼區 -->
+                    <div class="space-y-2 pt-1">
+                        <label class="text-xs font-medium text-gray-300 block">輸入壓縮代碼還原資料：</label>
+                        <textarea id="import-code-box" placeholder="請在此貼上從其他裝置複製的壓縮代碼..." class="w-full h-20 bg-gray-800/80 border border-gray-700 rounded-xl p-3 text-xs text-white placeholder-gray-500 font-mono focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+                        <button onclick="restoreFromCompressedCode()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-xs">
+                            <i class="fa-solid fa-file-arrow-up"></i> 使用此代碼還原資料
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -278,7 +313,6 @@
         let records = JSON.parse(localStorage.getItem('earth_cleaning_records') || '{}');
         let currentChart = null;
         
-        // 追蹤每場是否為使用者手動修改過 (鎖定保護)
         let userModifiedRuns = [false, false, false, false, false];
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -345,7 +379,6 @@
 
         let isUpdating = false;
 
-        // 核心計算引擎：支援鎖定與智慧補齊
         function recalculateAndRender(overrideRuns = null) {
             if (isUpdating) return;
             isUpdating = true;
@@ -353,7 +386,6 @@
             const start = parseFloat(document.getElementById('start-gems').value);
             const end = parseFloat(document.getElementById('end-gems').value);
 
-            // 1. 取得當前 5 場的數值與手動狀態
             let runs = [];
             for (let i = 0; i < 5; i++) {
                 if (overrideRuns && overrideRuns[i] !== undefined) {
@@ -367,7 +399,6 @@
             let totalVip = null, totalRaw = null, avgVip = null, avgRaw = null;
             let error = null;
 
-            // 如果有填 X 和 Y，計算出目標總量 (Raw)
             let targetTotalRaw = null;
             if (!isNaN(start) && !isNaN(end)) {
                 totalVip = end - start;
@@ -381,9 +412,7 @@
                 }
             }
 
-            // 2. 智慧補齊邏輯：若有目標總量 (X&Y)，自動填補未被手動修改的格子
             if (targetTotalRaw !== null) {
-                // 計算已被使用者手動填寫的總和與個數
                 let modifiedSum = 0;
                 let emptyIndices = [];
 
@@ -405,7 +434,6 @@
                     });
                 }
             } else {
-                // 如果沒有填 X 和 Y，但有填部分場次，則用場次反推總量
                 const filledVals = runs.filter(v => v !== null);
                 if (filledVals.length > 0) {
                     const sumRaw = runs.reduce((acc, cur) => acc + (cur !== null ? cur : 0), 0);
@@ -416,7 +444,6 @@
                 }
             }
 
-            // 檢查 5 場全部填完時與 X&Y 是否衝突
             const filledCount = runs.filter(v => v !== null).length;
             if (filledCount === 5 && !isNaN(start) && !isNaN(end)) {
                 const sumVip = runs.reduce((acc, cur) => acc + cur * 3, 0);
@@ -425,11 +452,9 @@
                 }
             }
 
-            // 3. 更新介面 DOM
             for (let i = 0; i < 5; i++) {
                 const inputEl = document.getElementById(`run-${i}`);
                 inputEl.value = runs[i] !== null ? Number(runs[i].toFixed(2)) : '';
-                // 視覺提示：標示哪些是使用者手動鎖定的欄位
                 if (userModifiedRuns[i]) {
                     inputEl.classList.add('border-emerald-500/80', 'bg-emerald-950/20');
                 } else {
@@ -446,23 +471,20 @@
             isUpdating = false;
         }
 
-        // 事件：輸入 X 或 Y
         function handleStartEndInput() {
             recalculateAndRender();
         }
 
-        // 事件：使用者手動輸入某個場次 (觸發鎖定該格)
         function handleRunInput(index) {
             const val = parseFloat(document.getElementById(`run-${index}`).value);
             if (isNaN(val)) {
                 userModifiedRuns[index] = false;
             } else {
-                userModifiedRuns[index] = true; // 標記為手動輸入並鎖定
+                userModifiedRuns[index] = true;
             }
             recalculateAndRender();
         }
 
-        // 事件：平均數逆向推算
         function handleAverageInput(type) {
             if (isUpdating) return;
             let avgVip = parseFloat(document.getElementById('avg-vip').value);
@@ -477,12 +499,11 @@
             }
 
             const singleRunVal = avgRaw;
-            userModifiedRuns = [true, true, true, true, true]; // 視同全數手動設定
+            userModifiedRuns = [true, true, true, true, true];
             const runs = [singleRunVal, singleRunVal, singleRunVal, singleRunVal, singleRunVal];
             recalculateAndRender(runs);
         }
 
-        // 事件：總獲得數逆向推算
         function handleTotalInput(type) {
             if (isUpdating) return;
             let totalVip = parseFloat(document.getElementById('total-vip').value);
@@ -669,6 +690,7 @@
             });
         }
 
+        // JSON 檔案備份與還原
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
             const dlAnchor = document.createElement('a');
@@ -699,6 +721,63 @@
                 }
             };
             reader.readAsText(file);
+        }
+
+        // LZ-String 壓縮文字代碼功能
+        function generateCompressedCode() {
+            if (Object.keys(records).length === 0) {
+                alert('目前沒有任何記錄可供產生代碼！');
+                return;
+            }
+            try {
+                const jsonStr = JSON.stringify(records);
+                const compressed = LZString.compressToEncodedURIComponent(jsonStr);
+                document.getElementById('export-code-box').value = compressed;
+            } catch (err) {
+                alert('壓縮失敗：' + err);
+            }
+        }
+
+        function copyExportCode() {
+            const box = document.getElementById('export-code-box');
+            if (!box.value) {
+                alert('請先產生壓縮代碼！');
+                return;
+            }
+            box.select();
+            box.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(box.value).then(() => {
+                alert('已成功複製壓縮代碼到剪貼簿！');
+            }).catch(err => {
+                alert('複製失敗，請手動選取複製。');
+            });
+        }
+
+        function restoreFromCompressedCode() {
+            const code = document.getElementById('import-code-box').value.trim();
+            if (!code) {
+                alert('請先貼上壓縮代碼！');
+                return;
+            }
+            try {
+                const decompressed = LZString.decompressFromEncodedURIComponent(code);
+                if (!decompressed) {
+                    alert('解壓失敗：代碼無效或已損毀！');
+                    return;
+                }
+                const imported = JSON.parse(decompressed);
+                if (typeof imported === 'object' && imported !== null) {
+                    records = imported;
+                    localStorage.setItem('earth_cleaning_records', JSON.stringify(records));
+                    alert('透過代碼還原資料成功！');
+                    loadDateRecord();
+                    document.getElementById('import-code-box').value = '';
+                } else {
+                    alert('代碼格式錯誤！');
+                }
+            } catch (err) {
+                alert('解析失敗：請確認代碼是否完整正確。');
+            }
         }
     </script>
 </body>
