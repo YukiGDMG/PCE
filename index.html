@@ -94,15 +94,15 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 shadow-lg space-y-2">
                     <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center justify-between">
-                        <span>當天一開始寶石數量 (參考用)</span>
-                        <span class="text-[10px] text-emerald-400">X 欄位</span>
+                        <span>當天一開始寶石數量 (X)</span>
+                        <span class="text-[10px] text-emerald-400">參考用</span>
                     </label>
                     <input type="number" id="start-gems" placeholder="例如: 5134" oninput="handleStartEndInput()" class="w-full bg-gray-800/80 border border-gray-700/80 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition text-lg font-mono">
                 </div>
                 <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 shadow-lg space-y-2">
                     <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center justify-between">
-                        <span>最後打完五場寶石數量 (參考用)</span>
-                        <span class="text-[10px] text-emerald-400">Y 欄位</span>
+                        <span>最後打完五場寶石數量 (Y)</span>
+                        <span class="text-[10px] text-emerald-400">參考用</span>
                     </label>
                     <input type="number" id="end-gems" placeholder="例如: 11857" oninput="handleStartEndInput()" class="w-full bg-gray-800/80 border border-gray-700/80 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition text-lg font-mono">
                 </div>
@@ -265,11 +265,9 @@
     </main>
 
     <script>
-        // 資料結構與初始化
         let records = JSON.parse(localStorage.getItem('earth_cleaning_records') || '{}');
         let currentChart = null;
 
-        // 初始化日期為今天
         document.addEventListener('DOMContentLoaded', () => {
             const todayStr = getLocalDateString(new Date());
             document.getElementById('record-date').value = todayStr;
@@ -283,7 +281,6 @@
             return localDate.toISOString().split('T')[0];
         }
 
-        // Tab 切換
         function switchTab(tabName) {
             ['daily', 'history', 'chart', 'backup'].forEach(t => {
                 document.getElementById(`view-${t}`).classList.add('hidden');
@@ -296,7 +293,6 @@
             if (tabName === 'chart') renderChart();
         }
 
-        // 取得當前表單數據
         function getFormData() {
             const startGems = parseFloat(document.getElementById('start-gems').value);
             const endGems = parseFloat(document.getElementById('end-gems').value);
@@ -322,7 +318,6 @@
             };
         }
 
-        // 顯示錯誤訊息
         function showError(msg) {
             const container = document.getElementById('error-container');
             const msgEl = document.getElementById('error-message');
@@ -334,7 +329,6 @@
             }
         }
 
-        // 核心計算與邏輯連動 (即時響應)
         let isUpdating = false;
 
         function updateUIValues(data, errorText = null) {
@@ -357,7 +351,7 @@
             isUpdating = false;
         }
 
-        // 1. 當輸入 Start / End 時的計算
+        // 1. 當輸入 Start (X) / End (Y) 時的計算
         function handleStartEndInput() {
             if (isUpdating) return;
             const start = parseFloat(document.getElementById('start-gems').value);
@@ -465,10 +459,6 @@
             const totalVip = avgVip !== null ? avgVip * 5 : null;
             const totalRaw = avgRaw !== null ? avgRaw * 5 : null;
             const runs = [null, null, null, null, null];
-            if (avgVip !== null) {
-                const singleRaw = avgRaw;
-                for(let i=0; i<5; i++) runs[i] = singleRaw;
-            }
 
             const start = parseFloat(document.getElementById('start-gems').value);
             const end = parseFloat(document.getElementById('end-gems').value);
@@ -498,10 +488,6 @@
             const avgVip = totalVip !== null ? totalVip / 5 : null;
             const avgRaw = totalRaw !== null ? totalRaw / 5 : null;
             const runs = [null, null, null, null, null];
-            if (totalRaw !== null) {
-                const singleRaw = totalRaw / 5;
-                for(let i=0; i<5; i++) runs[i] = singleRaw;
-            }
 
             const start = parseFloat(document.getElementById('start-gems').value);
             const end = parseFloat(document.getElementById('end-gems').value);
@@ -514,7 +500,6 @@
             }, null);
         }
 
-        // 載入指定日期的記錄
         function loadDateRecord() {
             const date = document.getElementById('record-date').value;
             const rec = records[date];
@@ -533,7 +518,6 @@
             }
         }
 
-        // 儲存記錄
         function saveCurrentRecord() {
             const date = document.getElementById('record-date').value;
             if (!date) {
@@ -546,7 +530,6 @@
             alert('已成功儲存今日記錄！');
         }
 
-        // 清空表單
         function clearCurrentForm(resetDate = true) {
             if (resetDate) {
                 document.getElementById('record-date').value = getLocalDateString(new Date());
@@ -561,7 +544,6 @@
             showError(null);
         }
 
-        // 渲染歷史記錄表格
         function renderHistory() {
             const tbody = document.getElementById('history-table-body');
             const noHistory = document.getElementById('no-history');
@@ -605,7 +587,6 @@
             }
         }
 
-        // 渲染趨勢圖表
         function renderChart() {
             const ctx = document.getElementById('gemChart').getContext('2d');
             const dates = Object.keys(records).sort();
@@ -690,7 +671,6 @@
             });
         }
 
-        // 備份與還原
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
             const dlAnchor = document.createElement('a');
