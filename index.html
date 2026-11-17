@@ -16,7 +16,6 @@
         body {
             font-family: 'Noto Sans TC', sans-serif;
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -46,7 +45,7 @@
                     <h1 class="text-xl md:text-2xl font-black tracking-wider bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
                         地球淨化工程 <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 ml-2">VIP ×3 啟用中</span>
                     </h1>
-                    <p class="text-xs text-slate-400">常駐活動寶石獲得數量智能記錄與分析系統</p>
+                    <p class="text-xs text-slate-400">常駐活動寶石獲得數量智能記錄與分析系統 (即時連動升級版)</p>
                 </div>
             </div>
 
@@ -83,9 +82,9 @@
                     <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
                         <div>
                             <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
-                                <i class="fa-solid fa-calendar-day text-emerald-400"></i> 活動數據填寫
+                                <i class="fa-solid fa-calendar-day text-emerald-400"></i> 活動數據即時填寫
                             </h2>
-                            <p class="text-xs text-slate-400">每日最多打 5 場，系統會自動支援雙向推算與 VIP ×3 結算</p>
+                            <p class="text-xs text-slate-400">輸入任意欄位即可即時雙向推算並檢核</p>
                         </div>
                         <button onclick="resetForm()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition-colors border border-slate-700">
                             <i class="fa-solid fa-rotate-right mr-1"></i> 清空重填
@@ -104,14 +103,14 @@
                                 <label class="block text-xs font-semibold text-slate-300 mb-1.5">
                                     當天一開始寶石數量 <span class="text-slate-500 font-normal">(參考用)</span>
                                 </label>
-                                <input type="number" id="start-count" min="0" placeholder="例如: 12000" oninput="calculateRealtime()"
+                                <input type="number" id="start-count" min="0" placeholder="例如: 5134" oninput="calculateRealtime('start-end')"
                                     class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1.5">
                                     最後打完五場寶石數量 <span class="text-slate-500 font-normal">(參考用)</span>
                                 </label>
-                                <input type="number" id="end-count" min="0" placeholder="例如: 15150" oninput="calculateRealtime()"
+                                <input type="number" id="end-count" min="0" placeholder="例如: 11857" oninput="calculateRealtime('start-end')"
                                     class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
                             </div>
                         </div>
@@ -129,55 +128,78 @@
                             <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
                                 <div>
                                     <span class="block text-[11px] text-slate-400 mb-1">第 1 場</span>
-                                    <input type="number" id="run-0" min="0" placeholder="原始量" oninput="calculateRealtime()"
+                                    <input type="number" id="run-0" min="0" placeholder="原始量" oninput="calculateRealtime('runs')"
                                         class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-center text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition-colors run-input">
                                 </div>
                                 <div>
                                     <span class="block text-[11px] text-slate-400 mb-1">第 2 場</span>
-                                    <input type="number" id="run-1" min="0" placeholder="原始量" oninput="calculateRealtime()"
+                                    <input type="number" id="run-1" min="0" placeholder="原始量" oninput="calculateRealtime('runs')"
                                         class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-center text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition-colors run-input">
                                 </div>
                                 <div>
                                     <span class="block text-[11px] text-slate-400 mb-1">第 3 場</span>
-                                    <input type="number" id="run-2" min="0" placeholder="原始量" oninput="calculateRealtime()"
+                                    <input type="number" id="run-2" min="0" placeholder="原始量" oninput="calculateRealtime('runs')"
                                         class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-center text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition-colors run-input">
                                 </div>
                                 <div>
                                     <span class="block text-[11px] text-slate-400 mb-1">第 4 場</span>
-                                    <input type="number" id="run-3" min="0" placeholder="原始量" oninput="calculateRealtime()"
+                                    <input type="number" id="run-3" min="0" placeholder="原始量" oninput="calculateRealtime('runs')"
                                         class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-center text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition-colors run-input">
                                 </div>
                                 <div>
                                     <span class="block text-[11px] text-slate-400 mb-1">第 5 場</span>
-                                    <input type="number" id="run-4" min="0" placeholder="原始量" oninput="calculateRealtime()"
+                                    <input type="number" id="run-4" min="0" placeholder="原始量" oninput="calculateRealtime('runs')"
                                         class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-center text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition-colors run-input">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Summary Calculation Inputs (Average & Total) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
-                                    <span>平均每場獲得數量 (含VIP×3)</span>
-                                    <span class="text-[10px] text-slate-400">可逆向推算</span>
+                        <!-- Side-by-Side Dual Column Sections for Average & Total -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Average per run (Dual Column) -->
+                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                                <label class="block text-xs font-bold text-slate-200 flex items-center justify-between">
+                                    <span>平均每場獲得寶石數量</span>
+                                    <span class="text-[10px] text-slate-400">可雙向推算</span>
                                 </label>
-                                <input type="number" id="input-average" step="0.1" min="0" placeholder="例如: 210" oninput="handleSummaryInput('average')"
-                                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
-                                <div id="err-average" class="text-xs text-rose-400 mt-1 hidden font-medium"></div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <span class="block text-[10px] text-slate-400 mb-1">原始平均 (無VIP×3)</span>
+                                        <input type="number" id="input-raw-avg" step="0.1" min="0" placeholder="例如: 70" oninput="calculateRealtime('raw-avg')"
+                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-emerald-500">
+                                    </div>
+                                    <div>
+                                        <span class="block text-[10px] text-emerald-400 mb-1">VIP×3 平均 (含VIP×3)</span>
+                                        <input type="number" id="input-vip-avg" step="0.1" min="0" placeholder="例如: 210" oninput="calculateRealtime('vip-avg')"
+                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-emerald-500">
+                                    </div>
+                                </div>
+                                <div id="err-avg" class="text-xs text-rose-400 hidden font-medium"></div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center justify-between">
-                                    <span>總獲得寶石數量 (含VIP×3)</span>
-                                    <span class="text-[10px] text-slate-400">可逆向推算</span>
+
+                            <!-- Total gemstones (Dual Column) -->
+                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                                <label class="block text-xs font-bold text-slate-200 flex items-center justify-between">
+                                    <span>總獲得寶石數量</span>
+                                    <span class="text-[10px] text-slate-400">可雙向推算</span>
                                 </label>
-                                <input type="number" id="input-total" min="0" placeholder="例如: 1050" oninput="handleSummaryInput('total')"
-                                    class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-100 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
-                                <div id="err-total" class="text-xs text-rose-400 mt-1 hidden font-medium"></div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <span class="block text-[10px] text-slate-400 mb-1">原始總量 (無VIP×3)</span>
+                                        <input type="number" id="input-raw-tot" min="0" placeholder="例如: 350" oninput="calculateRealtime('raw-tot')"
+                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-emerald-500">
+                                    </div>
+                                    <div>
+                                        <span class="block text-[10px] text-emerald-400 mb-1">VIP×3 總量 (含VIP×3)</span>
+                                        <input type="number" id="input-vip-tot" min="0" placeholder="例如: 1050" oninput="calculateRealtime('vip-tot')"
+                                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-emerald-500">
+                                    </div>
+                                </div>
+                                <div id="err-tot" class="text-xs text-rose-400 hidden font-medium"></div>
                             </div>
                         </div>
 
-                        <!-- General Conflict / Status Banner -->
+                        <!-- Conflict Banner -->
                         <div id="conflict-banner" class="hidden p-4 rounded-xl bg-rose-950/40 border border-rose-800/60 text-rose-200 text-xs flex items-start gap-3">
                             <i class="fa-solid fa-triangle-exclamation text-rose-400 text-base mt-0.5"></i>
                             <div class="space-y-1">
@@ -200,34 +222,46 @@
                     <!-- Live Preview Card -->
                     <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl backdrop-blur-md">
                         <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-calculator text-emerald-400"></i> 即時計算預覽
+                            <i class="fa-solid fa-calculator text-emerald-400"></i> 即時計算結果預覽
                         </h3>
                         <div class="space-y-4">
-                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2.5">
                                 <div class="flex justify-between text-xs text-slate-400">
-                                    <span>五場原始總和:</span>
+                                    <span>五場原始掉落總和:</span>
                                     <span id="preview-raw-sum" class="font-bold text-slate-200">0</span>
                                 </div>
                                 <div class="flex justify-between text-xs text-slate-400">
                                     <span>VIP 加成倍率:</span>
                                     <span class="font-bold text-emerald-400">× 3</span>
                                 </div>
-                                <div class="border-t border-slate-800/80 pt-2 flex justify-between text-sm">
-                                    <span class="font-bold text-slate-300">計算後總獲得:</span>
-                                    <span id="preview-total" class="font-black text-emerald-400 text-base">0</span>
+                                <div class="border-t border-slate-800/80 pt-2 grid grid-cols-2 gap-2 text-center">
+                                    <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
+                                        <span class="block text-[10px] text-slate-400">原始總量</span>
+                                        <span id="preview-raw-tot" class="font-bold text-slate-200 text-sm">0</span>
+                                    </div>
+                                    <div class="bg-emerald-950/30 p-2 rounded-xl border border-emerald-500/30">
+                                        <span class="block text-[10px] text-emerald-400">VIP×3 總量</span>
+                                        <span id="preview-vip-tot" class="font-black text-emerald-300 text-base">0</span>
+                                    </div>
                                 </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="font-bold text-slate-300">平均每場數量:</span>
-                                    <span id="preview-avg" class="font-black text-teal-300 text-base">0.0</span>
+                                <div class="grid grid-cols-2 gap-2 text-center">
+                                    <div class="bg-slate-900 p-2 rounded-xl border border-slate-800">
+                                        <span class="block text-[10px] text-slate-400">原始平均/場</span>
+                                        <span id="preview-raw-avg" class="font-bold text-slate-200 text-sm">0.0</span>
+                                    </div>
+                                    <div class="bg-teal-950/30 p-2 rounded-xl border border-teal-500/30">
+                                        <span class="block text-[10px] text-teal-400">VIP×3 平均/場</span>
+                                        <span id="preview-vip-avg" class="font-black text-teal-300 text-base">0.0</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div id="wallet-diff-box" class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1">
+                            <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1">
                                 <div class="flex justify-between">
                                     <span>前後寶石差額 (End - Start):</span>
                                     <span id="preview-diff" class="font-bold text-slate-300">未提供</span>
                                 </div>
-                                <p class="text-[11px] text-slate-500" id="preview-diff-note">輸入起訖數量可比對活動實際收益。</p>
+                                <p class="text-[11px] text-slate-500">輸入起訖數量可自動核對活動實際收益。</p>
                             </div>
                         </div>
                     </div>
@@ -235,13 +269,13 @@
                     <!-- Rule Guide Card -->
                     <div class="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 text-xs text-slate-400 space-y-3">
                         <h4 class="font-bold text-slate-300 flex items-center gap-2">
-                            <i class="fa-solid fa-circle-info text-cyan-400"></i> 智慧雙向填寫說明
+                            <i class="fa-solid fa-circle-info text-cyan-400"></i> 左右雙欄與即時連動說明
                         </h4>
                         <ul class="space-y-2 list-disc list-inside leading-relaxed">
-                            <li><strong class="text-slate-200">全填五場：</strong>自動計算總和 ×3 與平均。</li>
-                            <li><strong class="text-slate-200">僅填總獲得/平均：</strong>當5場皆未填時，可直接由總獲得反推平均與平均分配至5場。</li>
-                            <li><strong class="text-slate-200">部分填寫：</strong>填了部分場次與總獲得時，系統會自動透過剩餘差額補齊。</li>
-                            <li><strong class="text-slate-200">衝突偵測：</strong>若已填滿5場，又手動填寫不相符的總獲得或平均，系統將立即警示錯誤。</li>
+                            <li><strong class="text-slate-200">即時計算：</strong>輸入任何欄位均會立刻連動更新所有左右雙欄與預覽結果。</li>
+                            <li><strong class="text-slate-200">左右對照：</strong>左欄一律為「原始無乘3」數值，右欄為「VIP×3」計算結果。</li>
+                            <li><strong class="text-slate-200">雙向推算：</strong>填寫任一欄位（如VIP總量或平均），系統會自動換算其他欄位及5場分配。</li>
+                            <li><strong class="text-slate-200">衝突警示：</strong>若填滿5場又輸入衝突的總量，將於下方即時顯示紅字錯誤。</li>
                         </ul>
                     </div>
                 </div>
@@ -259,11 +293,11 @@
                         <span id="stat-total-days" class="text-2xl font-black text-slate-100">0 天</span>
                     </div>
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                        <span class="text-xs text-slate-400 block mb-1">累積獲得寶石總數</span>
+                        <span class="text-xs text-slate-400 block mb-1">累積獲得寶石總數 (VIP×3)</span>
                         <span id="stat-total-gems" class="text-2xl font-black text-emerald-400">0</span>
                     </div>
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
-                        <span class="text-xs text-slate-400 block mb-1">歷史平均每場寶石</span>
+                        <span class="text-xs text-slate-400 block mb-1">歷史平均每場寶石 (VIP×3)</span>
                         <span id="stat-avg-gems" class="text-2xl font-black text-teal-300">0.0</span>
                     </div>
                     <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800">
@@ -292,8 +326,8 @@
                                 <th class="p-4">日期</th>
                                 <th class="p-4">起始 / 結束數量</th>
                                 <th class="p-4">5場原始掉落 (1~5)</th>
-                                <th class="p-4">平均每場 (VIP×3)</th>
-                                <th class="p-4">總獲得寶石 (VIP×3)</th>
+                                <th class="p-4">平均每場 (原始 / VIP×3)</th>
+                                <th class="p-4">總獲得寶石 (原始 / VIP×3)</th>
                                 <th class="p-4 text-center">操作</th>
                             </tr>
                         </thead>
@@ -313,14 +347,14 @@
                         <h2 class="text-lg font-bold text-slate-200 flex items-center gap-2">
                             <i class="fa-solid fa-chart-line text-emerald-400"></i> 寶石獲得趨勢分析
                         </h2>
-                        <p class="text-xs text-slate-400">滑鼠懸停於數據點可檢視詳細數據與各場次明細</p>
+                        <p class="text-xs text-slate-400">滑鼠移至數據點可檢視詳細數據與各場次明細</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="setChartMetric('total')" id="btn-metric-total" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950 transition-colors">
-                            總獲得寶石量
+                        <button onclick="setChartMetric('vip-total')" id="btn-metric-total" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950 transition-colors">
+                            VIP×3 總獲得量
                         </button>
-                        <button onclick="setChartMetric('average')" id="btn-metric-avg" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors">
-                            平均每場數量
+                        <button onclick="setChartMetric('vip-avg')" id="btn-metric-avg" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors">
+                            VIP×3 平均每場
                         </button>
                     </div>
                 </div>
@@ -376,14 +410,14 @@
     <script>
         // --- State Management ---
         let records = JSON.parse(localStorage.getItem('earth_cleaning_records') || '[]');
-        let chartMetric = 'total'; // 'total' or 'average'
+        let chartMetric = 'vip-total';
         let chartInstance = null;
-        let editingId = null; // if not null, editing an existing record
+        let editingId = null;
+        let isInternalUpdating = false; // Prevent recursive loops
 
-        // Initialize on load
         window.onload = function() {
             document.getElementById('record-date').value = getTodayDateStr();
-            calculateRealtime();
+            calculateRealtime('init');
             renderHistoryTable();
             initChart();
         };
@@ -423,17 +457,14 @@
             toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i><span class="text-xs font-bold">${message}</span>`;
             
             container.appendChild(toast);
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
-            }, 10);
-
+            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
             setTimeout(() => {
                 toast.classList.add('translate-y-2', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
 
-        // --- Smart Calculation & Validation Logic ---
+        // --- Instant Reactive Calculation Engine ---
         function getRunsValues() {
             const runs = [];
             for (let i = 0; i < 5; i++) {
@@ -443,119 +474,155 @@
             return runs;
         }
 
-        function calculateRealtime(source = 'runs') {
+        function calculateRealtime(triggerSource) {
+            if (isInternalUpdating) return;
+            isInternalUpdating = true;
+
             const runs = getRunsValues();
             const filledRuns = runs.filter(v => v !== null);
             const sumRuns = filledRuns.reduce((acc, curr) => acc + curr, 0);
-            
+
             const startVal = Number(document.getElementById('start-count').value) || 0;
             const endVal = Number(document.getElementById('end-count').value) || 0;
-            
-            const inputAvgElem = document.getElementById('input-average');
-            const inputTotElem = document.getElementById('input-total');
-            const errAvg = document.getElementById('err-average');
-            const errTot = document.getElementById('err-total');
+
+            const rawAvgElem = document.getElementById('input-raw-avg');
+            const vipAvgElem = document.getElementById('input-vip-avg');
+            const rawTotElem = document.getElementById('input-raw-tot');
+            const vipTotElem = document.getElementById('input-vip-tot');
+
+            const errAvg = document.getElementById('err-avg');
+            const errTot = document.getElementById('err-tot');
             const conflictBanner = document.getElementById('conflict-banner');
             const conflictMsg = document.getElementById('conflict-message');
 
-            // Reset errors
             errAvg.classList.add('hidden');
             errTot.classList.add('hidden');
             conflictBanner.classList.add('hidden');
 
-            let calcTotal = 0;
-            let calcAvg = 0;
+            let rawSum = 0;
+            let vipSum = 0;
+            let rawAvg = 0;
+            let vipAvg = 0;
 
-            // Scenario 1: All 5 runs filled
-            if (filledRuns.length === 5) {
-                calcTotal = sumRuns * 3;
-                calcAvg = calcTotal / 5;
+            // Handle based on trigger source or direct field updates
+            if (triggerSource === 'runs') {
+                if (filledRuns.length > 0) {
+                    if (filledRuns.length === 5) {
+                        rawSum = sumRuns;
+                    } else {
+                        // If partial runs, estimate or prorate if needed, or sum current
+                        rawSum = sumRuns * (5 / filledRuns.length);
+                    }
+                    vipSum = rawSum * 3;
+                    rawAvg = rawSum / 5;
+                    vipAvg = vipSum / 5;
 
-                if (source === 'runs') {
-                    inputTotElem.value = calcTotal;
-                    inputAvgElem.value = calcAvg.toFixed(1);
-                } else if (source === 'total' && inputTotElem.value !== '') {
-                    const userTot = Number(inputTotElem.value);
-                    if (Math.abs(userTot - calcTotal) > 0.01) {
-                        errTot.textContent = `與5場加總乘3 (${calcTotal}) 不符`;
-                        errTot.classList.remove('hidden');
-                        showConflict(`5場總和計算結果 (${calcTotal}) 與填寫的總獲得數量 (${userTot}) 不符！`);
-                    }
-                } else if (source === 'average' && inputAvgElem.value !== '') {
-                    const userAvg = Number(inputAvgElem.value);
-                    if (Math.abs(userAvg - calcAvg) > 0.01) {
-                        errAvg.textContent = `與5場計算平均 (${calcAvg.toFixed(1)}) 不符`;
-                        errAvg.classList.remove('hidden');
-                        showConflict(`5場平均計算結果 (${calcAvg.toFixed(1)}) 與填寫的平均每場 (${userAvg}) 不符！`);
-                    }
+                    rawAvgElem.value = rawAvg.toFixed(1);
+                    vipAvgElem.value = vipAvg.toFixed(1);
+                    rawTotElem.value = Math.round(rawSum);
+                    vipTotElem.value = Math.round(vipSum);
+                } else {
+                    rawAvgElem.value = '';
+                    vipAvgElem.value = '';
+                    rawTotElem.value = '';
+                    vipTotElem.value = '';
                 }
             } 
-            // Scenario 2: 0 runs filled, but Total or Average given
-            else if (filledRuns.length === 0) {
-                if (inputTotElem.value !== '') {
-                    calcTotal = Number(inputTotElem.value);
-                    calcAvg = calcTotal / 5;
-                    inputAvgElem.value = calcAvg.toFixed(1);
-                } else if (inputAvgElem.value !== '') {
-                    calcAvg = Number(inputAvgElem.value);
-                    calcTotal = calcAvg * 5;
-                    inputTotElem.value = calcTotal;
-                }
+            else if (triggerSource === 'raw-avg') {
+                const val = Number(rawAvgElem.value) || 0;
+                rawAvg = val;
+                vipAvg = val * 3;
+                rawSum = val * 5;
+                vipSum = rawSum * 3;
+
+                vipAvgElem.value = vipAvg.toFixed(1);
+                rawTotElem.value = Math.round(rawSum);
+                vipTotElem.value = Math.round(vipSum);
             }
-            // Scenario 3: Partial runs filled (1 to 4 runs)
+            else if (triggerSource === 'vip-avg') {
+                const val = Number(vipAvgElem.value) || 0;
+                vipAvg = val;
+                rawAvg = val / 3;
+                vipSum = val * 5;
+                rawSum = vipSum / 3;
+
+                rawAvgElem.value = rawAvg.toFixed(1);
+                rawTotElem.value = Math.round(rawSum);
+                vipTotElem.value = Math.round(vipSum);
+            }
+            else if (triggerSource === 'raw-tot') {
+                const val = Number(rawTotElem.value) || 0;
+                rawSum = val;
+                vipSum = val * 3;
+                rawAvg = val / 5;
+                vipAvg = vipSum / 5;
+
+                vipTotElem.value = Math.round(vipSum);
+                rawAvgElem.value = rawAvg.toFixed(1);
+                vipAvgElem.value = vipAvg.toFixed(1);
+            }
+            else if (triggerSource === 'vip-tot') {
+                const val = Number(vipTotElem.value) || 0;
+                vipSum = val;
+                rawSum = val / 3;
+                vipAvg = val / 5;
+                rawAvg = rawSum / 5;
+
+                rawTotElem.value = Math.round(rawSum);
+                rawAvgElem.value = rawAvg.toFixed(1);
+                vipAvgElem.value = vipAvg.toFixed(1);
+            }
             else {
-                if (inputTotElem.value !== '') {
-                    calcTotal = Number(inputTotElem.value);
-                    calcAvg = calcTotal / 5;
-                    inputAvgElem.value = calcAvg.toFixed(1);
-                } else if (inputAvgElem.value !== '') {
-                    calcAvg = Number(inputAvgElem.value);
-                    calcTotal = calcAvg * 5;
-                    inputTotElem.value = calcTotal;
-                } else {
-                    calcTotal = sumRuns * 3;
-                    calcAvg = calcTotal / 5;
+                // Default calculation from runs or defaults
+                if (filledRuns.length === 5) {
+                    rawSum = sumRuns;
+                    vipSum = rawSum * 3;
+                    rawAvg = rawSum / 5;
+                    vipAvg = vipSum / 5;
+                    rawAvgElem.value = rawAvg.toFixed(1);
+                    vipAvgElem.value = vipAvg.toFixed(1);
+                    rawTotElem.value = Math.round(rawSum);
+                    vipTotElem.value = Math.round(vipSum);
                 }
             }
 
-            // Update UI preview box
-            document.getElementById('preview-raw-sum').textContent = sumRuns;
-            document.getElementById('preview-total').textContent = calcTotal;
-            document.getElementById('preview-avg').textContent = calcAvg.toFixed(1);
+            // Conflict detection if all 5 runs are filled
+            if (filledRuns.length === 5) {
+                const expectedVipTot = sumRuns * 3;
+                const currentVipTot = Number(vipTotElem.value) || 0;
+                if (Math.abs(expectedVipTot - currentVipTot) > 0.1) {
+                    errTot.textContent = `與5場加總×3 (${expectedVipTot}) 不符`;
+                    errTot.classList.remove('hidden');
+                    conflictBanner.classList.remove('hidden');
+                    conflictMsg.textContent = `5場原始掉落總和加總乘3計算結果為 ${expectedVipTot}，與填寫的 VIP 總獲得數量 ${currentVipTot} 發生衝突！`;
+                }
+            }
 
-            // Wallet diff
-            const startInput = document.getElementById('start-count').value;
-            const endInput = document.getElementById('end-count').value;
-            if (startInput !== '' && endInput !== '') {
+            // Update live preview box
+            const displayRawSum = filledRuns.length === 5 ? sumRuns : (rawSum || 0);
+            const displayVipTot = Number(vipTotElem.value) || (displayRawSum * 3);
+            const displayRawTot = Number(rawTotElem.value) || displayRawSum;
+            const displayVipAvg = Number(vipAvgElem.value) || (displayVipTot / 5);
+            const displayRawAvg = Number(rawAvgElem.value) || (displayRawTot / 5);
+
+            document.getElementById('preview-raw-sum').textContent = sumRuns;
+            document.getElementById('preview-raw-tot').textContent = Math.round(displayRawTot);
+            document.getElementById('preview-vip-tot').textContent = Math.round(displayVipTot);
+            document.getElementById('preview-raw-avg').textContent = displayRawAvg.toFixed(1);
+            document.getElementById('preview-vip-avg').textContent = displayVipAvg.toFixed(1);
+
+            // Wallet diff calculation
+            if (startVal !== 0 || endVal !== 0) {
                 const diff = endVal - startVal;
                 const diffElem = document.getElementById('preview-diff');
                 diffElem.textContent = `${diff >= 0 ? '+' : ''}${diff}`;
-                diffElem.className = `font-bold ${diff >= calcTotal ? 'text-emerald-400' : 'text-amber-400'}`;
+                diffElem.className = `font-bold ${diff >= displayVipTot ? 'text-emerald-400' : 'text-amber-400'}`;
             } else {
                 document.getElementById('preview-diff').textContent = '未提供';
                 document.getElementById('preview-diff').className = 'font-bold text-slate-300';
             }
-        }
 
-        function handleSummaryInput(type) {
-            const inputAvg = document.getElementById('input-average');
-            const inputTot = document.getElementById('input-total');
-
-            if (type === 'total' && inputTot.value !== '') {
-                const tot = Number(inputTot.value);
-                inputAvg.value = (tot / 5).toFixed(1);
-            } else if (type === 'average' && inputAvg.value !== '') {
-                const avg = Number(inputAvg.value);
-                inputTot.value = avg * 5;
-            }
-            calculateRealtime(type);
-        }
-
-        function showConflict(msg) {
-            const banner = document.getElementById('conflict-banner');
-            const msgElem = document.getElementById('conflict-message');
-            msgElem.textContent = msg;
-            banner.classList.remove('hidden');
+            isInternalUpdating = false;
         }
 
         // --- Form Submission & Save ---
@@ -565,8 +632,11 @@
             const startCount = document.getElementById('start-count').value === '' ? null : Number(document.getElementById('start-count').value);
             const endCount = document.getElementById('end-count').value === '' ? null : Number(document.getElementById('end-count').value);
             const runs = getRunsValues();
-            const total = Number(document.getElementById('input-total').value) || 0;
-            const average = Number(document.getElementById('input-average').value) || 0;
+            
+            const rawTotal = Number(document.getElementById('input-raw-tot').value) || 0;
+            const total = Number(document.getElementById('input-vip-tot').value) || 0;
+            const rawAverage = Number(document.getElementById('input-raw-avg').value) || 0;
+            const average = Number(document.getElementById('input-vip-avg').value) || 0;
 
             const recordItem = {
                 id: editingId ? editingId : Date.now().toString(),
@@ -574,31 +644,27 @@
                 startCount,
                 endCount,
                 runs,
+                rawTotal,
                 total,
+                rawAverage,
                 average
             };
 
             if (editingId) {
                 const idx = records.findIndex(r => r.id === editingId);
-                if (idx !== -1) {
-                    records[idx] = recordItem;
-                }
+                if (idx !== -1) records[idx] = recordItem;
                 editingId = null;
                 document.getElementById('submit-btn').innerHTML = `<i class="fa-solid fa-floppy-disk text-lg"></i> 儲存今日活動紀錄`;
             } else {
-                // Check if date already exists
                 const existingIdx = records.findIndex(r => r.date === date);
                 if (existingIdx !== -1) {
-                    if (!confirm(`日期 ${date} 的紀錄已存在，是否要覆蓋？`)) {
-                        return;
-                    }
+                    if (!confirm(`日期 ${date} 的紀錄已存在，是否要覆蓋？`)) return;
                     records[existingIdx] = recordItem;
                 } else {
                     records.push(recordItem);
                 }
             }
 
-            // Sort by date descending
             records.sort((a, b) => new Date(b.date) - new Date(a.date));
             localStorage.setItem('earth_cleaning_records', JSON.stringify(records));
 
@@ -613,17 +679,16 @@
             document.getElementById('record-date').value = getTodayDateStr();
             editingId = null;
             document.getElementById('submit-btn').innerHTML = `<i class="fa-solid fa-floppy-disk text-lg"></i> 儲存今日活動紀錄`;
-            calculateRealtime();
+            calculateRealtime('init');
         }
 
         // --- History Table Rendering & Actions ---
         function renderHistoryTable() {
             const tbody = document.getElementById('history-tbody');
             const searchVal = document.getElementById('search-input').value.trim().toLowerCase();
-            
             const filtered = records.filter(r => r.date.toLowerCase().includes(searchVal));
 
-            // Update stats
+            // Stats
             document.getElementById('stat-total-days').textContent = `${records.length} 天`;
             const totalGemsAll = records.reduce((acc, curr) => acc + curr.total, 0);
             document.getElementById('stat-total-gems').textContent = totalGemsAll.toLocaleString();
@@ -650,13 +715,16 @@
                     ? `${r.startCount} → ${r.endCount} <span class="text-xs text-emerald-400 font-bold">(+${r.endCount - r.startCount})</span>`
                     : '<span class="text-slate-600">未填</span>';
 
+                const rawAvgDisplay = r.rawAverage !== undefined ? r.rawAverage.toFixed(1) : (r.average / 3).toFixed(1);
+                const rawTotDisplay = r.rawTotal !== undefined ? r.rawTotal : Math.round(r.total / 3);
+
                 return `
                     <tr class="hover:bg-slate-900/60 transition-colors border-b border-slate-800/40">
                         <td class="p-4 font-bold text-slate-200">${r.date}</td>
                         <td class="p-4 text-xs text-slate-400">${walletStr}</td>
                         <td class="p-4 text-xs font-mono text-teal-300">[${runsStr}]</td>
-                        <td class="p-4 font-bold text-cyan-300">${r.average.toFixed(1)}</td>
-                        <td class="p-4 font-black text-emerald-400">${r.total.toLocaleString()}</td>
+                        <td class="p-4"><span class="text-slate-400">${rawAvgDisplay}</span> <span class="text-slate-600 mx-1">/</span> <span class="font-bold text-cyan-300">${r.average.toFixed(1)}</span></td>
+                        <td class="p-4"><span class="text-slate-400">${rawTotDisplay.toLocaleString()}</span> <span class="text-slate-600 mx-1">/</span> <span class="font-black text-emerald-400">${r.total.toLocaleString()}</span></td>
                         <td class="p-4 text-center space-x-2">
                             <button onclick="editRecord('${r.id}')" title="編輯" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors">
                                 <i class="fa-solid fa-pen text-xs"></i>
@@ -680,14 +748,15 @@
             r.runs.forEach((val, idx) => {
                 document.getElementById(`run-${idx}`).value = val !== null ? val : '';
             });
-            document.getElementById('input-total').value = r.total;
-            document.getElementById('input-average').value = r.average;
+            document.getElementById('input-raw-tot').value = r.rawTotal !== undefined ? r.rawTotal : Math.round(r.total / 3);
+            document.getElementById('input-vip-tot').value = r.total;
+            document.getElementById('input-raw-avg').value = r.rawAverage !== undefined ? r.rawAverage.toFixed(1) : (r.average / 3).toFixed(1);
+            document.getElementById('input-vip-avg').value = r.average.toFixed(1);
 
             editingId = id;
             document.getElementById('submit-btn').innerHTML = `<i class="fa-solid fa-pen-to-square text-lg"></i> 更新紀錄 (${r.date})`;
             
             switchTab('record');
-            calculateRealtime();
             showToast('已載入紀錄至表單進行編輯', 'success');
         }
 
@@ -712,18 +781,16 @@
         // --- Chart.js Analytics ---
         function initChart() {
             const ctx = document.getElementById('trendChart').getContext('2d');
-            
-            // Sort ascending for chart chronological display
             const sorted = [...records].reverse();
             const labels = sorted.map(r => r.date);
-            const dataValues = sorted.map(r => chartMetric === 'total' ? r.total : r.average);
+            const dataValues = sorted.map(r => chartMetric === 'vip-total' ? r.total : r.average);
 
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: chartMetric === 'total' ? '總獲得寶石數量 (VIP×3)' : '平均每場數量 (VIP×3)',
+                        label: chartMetric === 'vip-total' ? 'VIP×3 總獲得寶石數量' : 'VIP×3 平均每場數量',
                         data: dataValues,
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
@@ -754,9 +821,10 @@
                             callbacks: {
                                 label: function(context) {
                                     const record = sorted[context.dataIndex];
-                                    const labelTitle = chartMetric === 'total' ? '總獲得寶石' : '平均每場寶石';
+                                    const labelTitle = chartMetric === 'vip-total' ? 'VIP×3 總獲得寶石' : 'VIP×3 平均每場';
+                                    const rawVal = chartMetric === 'vip-total' ? (record.rawTotal || Math.round(record.total / 3)) : (record.rawAverage || (record.average / 3).toFixed(1));
                                     return [
-                                        ` ${labelTitle}: ${context.parsed.y}`,
+                                        ` ${labelTitle}: ${context.parsed.y} (原始: ${rawVal})`,
                                         ` 5場原始掉落: [${record.runs.join(', ')}]`,
                                         record.startCount !== null && record.endCount !== null ? ` 起訖差額: +${record.endCount - record.startCount}` : ''
                                     ].filter(Boolean);
@@ -781,7 +849,7 @@
 
         function setChartMetric(metric) {
             chartMetric = metric;
-            if (metric === 'total') {
+            if (metric === 'vip-total') {
                 document.getElementById('btn-metric-total').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500 text-slate-950 transition-colors";
                 document.getElementById('btn-metric-avg').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors";
             } else {
@@ -795,8 +863,8 @@
             if (!chartInstance) return;
             const sorted = [...records].reverse();
             chartInstance.data.labels = sorted.map(r => r.date);
-            chartInstance.data.datasets[0].label = chartMetric === 'total' ? '總獲得寶石數量 (VIP×3)' : '平均每場數量 (VIP×3)';
-            chartInstance.data.datasets[0].data = sorted.map(r => chartMetric === 'total' ? r.total : r.average);
+            chartInstance.data.datasets[0].label = chartMetric === 'vip-total' ? 'VIP×3 總獲得寶石數量' : 'VIP×3 平均每場數量';
+            chartInstance.data.datasets[0].data = sorted.map(r => chartMetric === 'vip-total' ? r.total : r.average);
             chartInstance.update();
         }
 
