@@ -58,6 +58,11 @@
                     <p class="text-xs text-gray-400">常駐活動寶石獲得數量智能記錄與分析系統</p>
                 </div>
             </div>
+            <!-- 自動儲存狀態指示器 -->
+            <div id="autosave-badge" class="text-[11px] px-2.5 py-1 rounded-full bg-gray-800 border border-gray-700 text-gray-400 flex items-center gap-1.5 transition-all">
+                <i class="fa-solid fa-cloud-check text-emerald-400"></i>
+                <span id="autosave-text">已同步儲存</span>
+            </div>
         </div>
     </header>
 
@@ -84,11 +89,14 @@
 
         <!-- 1. 每日記錄 Tab -->
         <section id="view-daily" class="space-y-4">
-            <!-- 日期選擇 -->
-            <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 flex items-center justify-between shadow-lg">
-                <label class="text-sm font-medium text-gray-300 flex items-center gap-2">
-                    <i class="fa-regular fa-calendar text-emerald-400"></i> 記錄日期
-                </label>
+            <!-- 日期選擇與編輯時間 -->
+            <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2 shadow-lg">
+                <div class="flex items-center gap-2">
+                    <label class="text-sm font-medium text-gray-300 flex items-center gap-2">
+                        <i class="fa-regular fa-calendar text-emerald-400"></i> 記錄日期
+                    </label>
+                    <span id="last-updated-label" class="text-[11px] text-gray-500"></span>
+                </div>
                 <input type="date" id="record-date" onchange="loadDateRecord()" class="bg-gray-800 border border-gray-700 rounded-xl px-3 py-1.5 text-white text-sm focus:outline-none focus:border-emerald-500">
             </div>
 
@@ -185,7 +193,7 @@
             <div id="error-container" class="hidden bg-red-950/60 border border-red-500/50 rounded-2xl p-4 text-red-200 text-sm flex items-start gap-3 shadow-lg">
                 <i class="fa-solid fa-triangle-exclamation text-red-400 mt-0.5 text-lg"></i>
                 <div class="space-y-1">
-                    <span class="font-bold block text-red-300">資料衝突或輸入錯誤</span>
+                    <span class="font-bold block text-red-300">資料衝突或輸入錯誤（已暫停自動儲存）</span>
                     <p id="error-message" class="text-xs text-red-300/90 leading-relaxed"></p>
                 </div>
             </div>
@@ -196,14 +204,14 @@
                     <i class="fa-solid fa-circle-info text-emerald-400"></i> 計算規則與使用說明
                 </div>
                 <p>• <strong>智慧鎖定與分配</strong>：輸入 $X$ 與 $Y$ 後，未手動填寫的場次會自動均分剩餘量；手動修改過的場次會被鎖定保護不被覆蓋。</p>
-                <p>• <strong>VIP ×3 加成</strong>：系統自動將五場原始掉落量加總乘 3 得到總獲得量。</p>
-                <p>• <strong>防呆檢測</strong>：當 5 場總和與 $Y - X$ 發生矛盾時，會即時顯示衝突警告。</p>
+                <p>• <strong>無感自動儲存</strong>：停止輸入約 0.8 秒後系統會自動存檔並更新編輯時間（資料有衝突時會自動暫停存檔保護）。</p>
+                <p>• <strong>跨裝置智慧合併</strong>：匯入檔案或壓縮代碼時，系統會自動合併不同日期的紀錄；遇相同日期則自動保留最新編輯的版本。</p>
             </div>
 
             <!-- 操作按鈕 -->
             <div class="flex gap-3 pt-2">
-                <button onclick="saveCurrentRecord()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-6 rounded-2xl shadow-lg transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-floppy-disk"></i> 儲存今日記錄
+                <button onclick="saveCurrentRecord(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-6 rounded-2xl shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i> 立即儲存今日記錄
                 </button>
                 <button onclick="clearCurrentForm()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-3 px-5 rounded-2xl border border-gray-700 transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-rotate-right"></i> 清空重填
@@ -224,6 +232,7 @@
                                 <th class="p-3 rounded-l-xl">日期</th>
                                 <th class="p-3 text-center">總獲得 (VIP×3)</th>
                                 <th class="p-3 text-center">平均每場 (VIP×3)</th>
+                                <th class="p-3 text-center hidden sm:table-cell">最後編輯</th>
                                 <th class="p-3 text-center rounded-r-xl">操作</th>
                             </tr>
                         </thead>
@@ -257,17 +266,17 @@
         <section id="view-backup" class="hidden space-y-4">
             <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-4 shadow-lg space-y-4">
                 <h3 class="text-sm font-semibold text-gray-200 flex items-center gap-2">
-                    <i class="fa-solid fa-database text-emerald-400"></i> 數據備份與還原
+                    <i class="fa-solid fa-database text-emerald-400"></i> 數據備份與智慧合併還原
                 </h3>
                 <p class="text-xs text-gray-400 leading-relaxed">
-                    您可以將所有歷史記錄匯出為 JSON 檔案進行備份，或匯入先前備份的檔案來還原資料。
+                    匯入 JSON 檔案或還原壓縮代碼時，系統會執行<strong>智慧時間戳記合併 (Last-Write-Wins)</strong>：不同日期的資料會自動拼在一起；若兩台裝置有同一天的紀錄，則自動保留「最後編輯時間」較新的那一筆！
                 </p>
                 <div class="flex flex-col sm:flex-row gap-3 pt-2">
                     <button onclick="exportData()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-file-arrow-down"></i> 匯出備份檔案 (JSON)
                     </button>
                     <label class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-200 font-semibold py-3 px-4 rounded-xl border border-gray-700 cursor-pointer transition flex items-center justify-center gap-2 text-center">
-                        <i class="fa-solid fa-file-arrow-up"></i> 匯入還原檔案
+                        <i class="fa-solid fa-file-arrow-up"></i> 匯入並合併檔案
                         <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
                     </label>
                 </div>
@@ -278,7 +287,7 @@
                         <i class="fa-solid fa-code text-emerald-400"></i> 文字代碼快速轉移 (跨裝置複製貼上)
                     </h4>
                     <p class="text-xs text-gray-400 leading-relaxed">
-                        透過前端壓縮演算法將所有資料轉為短代碼，方便直接透過 LINE 或其他通訊軟體複製貼上轉移至手機或其他裝置！
+                        透過前端壓縮演算法將所有資料轉為短代碼，方便直接透過 LINE 或其他通訊軟體複製貼上轉移並合併至手機或其他裝置！
                     </p>
                     
                     <!-- 產生代碼區 -->
@@ -296,10 +305,10 @@
 
                     <!-- 還原代碼區 -->
                     <div class="space-y-2 pt-1">
-                        <label class="text-xs font-medium text-gray-300 block">輸入壓縮代碼還原資料：</label>
+                        <label class="text-xs font-medium text-gray-300 block">貼上壓縮代碼進行智慧合併：</label>
                         <textarea id="import-code-box" placeholder="請在此貼上從其他裝置複製的壓縮代碼..." class="w-full h-20 bg-gray-800/80 border border-gray-700 rounded-xl p-3 text-xs text-white placeholder-gray-500 font-mono focus:outline-none focus:border-emerald-500 resize-none"></textarea>
                         <button onclick="restoreFromCompressedCode()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-xs">
-                            <i class="fa-solid fa-file-arrow-up"></i> 使用此代碼還原資料
+                            <i class="fa-solid fa-code-merge"></i> 合併此代碼的資料
                         </button>
                     </div>
                 </div>
@@ -312,8 +321,9 @@
     <script>
         let records = JSON.parse(localStorage.getItem('earth_cleaning_records') || '{}');
         let currentChart = null;
-        
         let userModifiedRuns = [false, false, false, false, false];
+        let autoSaveTimer = null;
+        let hasCurrentError = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             const todayStr = getLocalDateString(new Date());
@@ -326,6 +336,44 @@
             const offset = date.getTimezoneOffset();
             const localDate = new Date(date.getTime() - (offset*60*1000));
             return localDate.toISOString().split('T')[0];
+        }
+
+        function formatTimestamp(ts) {
+            if (!ts) return '';
+            const d = new Date(ts);
+            const pad = n => String(n).padStart(2, '0');
+            return `${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        }
+
+        function updateAutoSaveBadge(state, text) {
+            const badge = document.getElementById('autosave-badge');
+            const textEl = document.getElementById('autosave-text');
+            const icon = badge.querySelector('i');
+
+            textEl.textContent = text;
+            if (state === 'saving') {
+                icon.className = 'fa-solid fa-spinner fa-spin text-amber-400';
+                badge.className = 'text-[11px] px-2.5 py-1 rounded-full bg-amber-950/40 border border-amber-500/40 text-amber-300 flex items-center gap-1.5 transition-all';
+            } else if (state === 'saved') {
+                icon.className = 'fa-solid fa-circle-check text-emerald-400';
+                badge.className = 'text-[11px] px-2.5 py-1 rounded-full bg-gray-800 border border-gray-700 text-gray-300 flex items-center gap-1.5 transition-all';
+            } else if (state === 'paused') {
+                icon.className = 'fa-solid fa-circle-exclamation text-red-400';
+                badge.className = 'text-[11px] px-2.5 py-1 rounded-full bg-red-950/40 border border-red-500/40 text-red-300 flex items-center gap-1.5 transition-all';
+            }
+        }
+
+        // 防抖動自動儲存排程 (0.8秒)
+        function triggerDebouncedAutoSave() {
+            clearTimeout(autoSaveTimer);
+            if (hasCurrentError) {
+                updateAutoSaveBadge('paused', '衝突暫停存檔');
+                return;
+            }
+            updateAutoSaveBadge('saving', '正在自動儲存...');
+            autoSaveTimer = setTimeout(() => {
+                saveCurrentRecord(false);
+            }, 800);
         }
 
         function switchTab(tabName) {
@@ -362,7 +410,8 @@
                 avgRaw: isNaN(avgRaw) ? null : avgRaw,
                 avgVip: isNaN(avgVip) ? null : avgVip,
                 totalRaw: isNaN(totalRaw) ? null : totalRaw,
-                totalVip: isNaN(totalVip) ? null : totalVip
+                totalVip: isNaN(totalVip) ? null : totalVip,
+                updatedAt: Date.now()
             };
         }
 
@@ -370,16 +419,18 @@
             const container = document.getElementById('error-container');
             const msgEl = document.getElementById('error-message');
             if (msg) {
+                hasCurrentError = true;
                 msgEl.textContent = msg;
                 container.classList.remove('hidden');
             } else {
+                hasCurrentError = false;
                 container.classList.add('hidden');
             }
         }
 
         let isUpdating = false;
 
-        function recalculateAndRender(overrideRuns = null) {
+        function recalculateAndRender(overrideRuns = null, triggerAutoSave = true) {
             if (isUpdating) return;
             isUpdating = true;
 
@@ -424,8 +475,8 @@
                     }
                 }
 
-                if (modifiedSum > targetTotalRaw) {
-                    error = `資料衝突：手動填寫的場次總和 (${modifiedSum * 3}) 已超過 (結束 - 開始) 的總獲得量 (${totalVip})！`;
+                if (modifiedSum > targetTotalRaw + 1e-5) {
+                    error = `資料衝突：手動填寫的場次總和 (${Number((modifiedSum * 3).toFixed(2))}) 已超過 (結束 - 開始) 的總獲得量 (${totalVip})！`;
                 } else if (emptyIndices.length > 0) {
                     const remainingRaw = targetTotalRaw - modifiedSum;
                     const fillValue = remainingRaw / emptyIndices.length;
@@ -447,8 +498,8 @@
             const filledCount = runs.filter(v => v !== null).length;
             if (filledCount === 5 && !isNaN(start) && !isNaN(end)) {
                 const sumVip = runs.reduce((acc, cur) => acc + cur * 3, 0);
-                if (Math.abs(sumVip - (end - start)) > 1e-5) {
-                    error = `資料衝突：5場總量×3 (${sumVip}) 與 (最後數量 - 開始數量) (${end - start}) 不符！`;
+                if (Math.abs(sumVip - (end - start)) > 1e-3) {
+                    error = `資料衝突：5場總量×3 (${Number(sumVip.toFixed(2))}) 與 (最後數量 - 開始數量) (${end - start}) 不符！`;
                 }
             }
 
@@ -469,10 +520,14 @@
 
             showError(error);
             isUpdating = false;
+
+            if (triggerAutoSave) {
+                triggerDebouncedAutoSave();
+            }
         }
 
         function handleStartEndInput() {
-            recalculateAndRender();
+            recalculateAndRender(null, true);
         }
 
         function handleRunInput(index) {
@@ -482,7 +537,7 @@
             } else {
                 userModifiedRuns[index] = true;
             }
-            recalculateAndRender();
+            recalculateAndRender(null, true);
         }
 
         function handleAverageInput(type) {
@@ -501,7 +556,7 @@
             const singleRunVal = avgRaw;
             userModifiedRuns = [true, true, true, true, true];
             const runs = [singleRunVal, singleRunVal, singleRunVal, singleRunVal, singleRunVal];
-            recalculateAndRender(runs);
+            recalculateAndRender(runs, true);
         }
 
         function handleTotalInput(type) {
@@ -520,35 +575,57 @@
             const singleRunVal = totalRaw !== null ? totalRaw / 5 : null;
             userModifiedRuns = [true, true, true, true, true];
             const runs = [singleRunVal, singleRunVal, singleRunVal, singleRunVal, singleRunVal];
-            recalculateAndRender(runs);
+            recalculateAndRender(runs, true);
         }
 
         function loadDateRecord() {
             const date = document.getElementById('record-date').value;
             const rec = records[date];
+            const labelEl = document.getElementById('last-updated-label');
             if (rec) {
                 document.getElementById('start-gems').value = rec.startGems !== null ? rec.startGems : '';
                 document.getElementById('end-gems').value = rec.endGems !== null ? rec.endGems : '';
                 userModifiedRuns = rec.userModifiedRuns ? [...rec.userModifiedRuns] : [false, false, false, false, false];
-                recalculateAndRender(rec.runs);
+                recalculateAndRender(rec.runs, false);
+                labelEl.textContent = rec.updatedAt ? `(編輯於 ${formatTimestamp(rec.updatedAt)})` : '';
+                updateAutoSaveBadge('saved', '已讀取存檔');
             } else {
-                clearCurrentForm(false);
+                clearCurrentForm(false, false);
+                labelEl.textContent = '(尚未建立紀錄)';
+                updateAutoSaveBadge('saved', '等待輸入');
             }
         }
 
-        function saveCurrentRecord() {
+        function saveCurrentRecord(manual = false) {
             const date = document.getElementById('record-date').value;
             if (!date) {
-                alert('請先選擇日期！');
+                if (manual) alert('請先選擇日期！');
+                return;
+            }
+            if (hasCurrentError) {
+                if (manual) alert('目前資料存在衝突或錯誤，請先修正後再儲存！');
                 return;
             }
             const data = getFormData();
+            // 檢查是否全空，若全空則不建立無意義空白紀錄（除非已有該日紀錄）
+            const isEmpty = data.startGems === null && data.endGems === null && data.runs.every(v => v === null);
+            if (isEmpty && !records[date]) {
+                updateAutoSaveBadge('saved', '無資料可存');
+                return;
+            }
+
             records[date] = data;
             localStorage.setItem('earth_cleaning_records', JSON.stringify(records));
-            alert('已成功儲存今日記錄！');
+            document.getElementById('last-updated-label').textContent = `(編輯於 ${formatTimestamp(data.updatedAt)})`;
+            updateAutoSaveBadge('saved', `已自動儲存 ${formatTimestamp(data.updatedAt).split(' ')[1]}`);
+
+            if (manual) {
+                alert('已成功儲存今日記錄！');
+            }
         }
 
-        function clearCurrentForm(resetDate = true) {
+        function clearCurrentForm(resetDate = true, deleteStored = false) {
+            clearTimeout(autoSaveTimer);
             if (resetDate) {
                 document.getElementById('record-date').value = getLocalDateString(new Date());
             }
@@ -561,6 +638,8 @@
             document.getElementById('total-raw').value = '';
             document.getElementById('total-vip').value = '';
             showError(null);
+            document.getElementById('last-updated-label').textContent = '';
+            updateAutoSaveBadge('saved', '表單已清空');
         }
 
         function renderHistory() {
@@ -579,10 +658,12 @@
                 const rec = records[date];
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-800/50 transition";
+                const updatedStr = rec.updatedAt ? formatTimestamp(rec.updatedAt) : '-';
                 tr.innerHTML = `
                     <td class="p-3 font-medium text-white">${date}</td>
                     <td class="p-3 text-center font-mono text-emerald-400">${rec.totalVip !== null ? rec.totalVip : '-'}</td>
                     <td class="p-3 text-center font-mono">${rec.avgVip !== null ? Number(rec.avgVip.toFixed(2)) : '-'}</td>
+                    <td class="p-3 text-center text-xs text-gray-400 hidden sm:table-cell font-mono">${updatedStr}</td>
                     <td class="p-3 text-center">
                         <button onclick="loadRecordToEdit('${date}')" class="text-xs bg-gray-800 hover:bg-emerald-600 text-gray-300 hover:text-white px-3 py-1 rounded-lg transition mr-1">編輯</button>
                         <button onclick="deleteRecord('${date}')" class="text-xs bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white px-3 py-1 rounded-lg transition">刪除</button>
@@ -603,6 +684,9 @@
                 delete records[date];
                 localStorage.setItem('earth_cleaning_records', JSON.stringify(records));
                 renderHistory();
+                if (document.getElementById('record-date').value === date) {
+                    clearCurrentForm(false);
+                }
             }
         }
 
@@ -690,7 +774,40 @@
             });
         }
 
-        // JSON 檔案備份與還原
+        // Last-Write-Wins (LWW) 智慧合併邏輯
+        function mergeRecordsByTimestamp(incomingRecords) {
+            let addedCount = 0;
+            let updatedCount = 0;
+            let keptLocalCount = 0;
+
+            Object.keys(incomingRecords).forEach(date => {
+                const incomingRec = incomingRecords[date];
+                const localRec = records[date];
+
+                if (!localRec) {
+                    // 本地沒有這天的紀錄，直接新增
+                    records[date] = incomingRec;
+                    addedCount++;
+                } else {
+                    // 兩邊都有這天，比較 updatedAt 時間戳記（預設舊資料為 0）
+                    const localTime = localRec.updatedAt || 0;
+                    const incomingTime = incomingRec.updatedAt || 0;
+
+                    if (incomingTime > localTime) {
+                        records[date] = incomingRec;
+                        updatedCount++;
+                    } else {
+                        keptLocalCount++;
+                    }
+                }
+            });
+
+            localStorage.setItem('earth_cleaning_records', JSON.stringify(records));
+            loadDateRecord();
+            return { addedCount, updatedCount, keptLocalCount };
+        }
+
+        // JSON 檔案備份與智慧合併
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(records, null, 2));
             const dlAnchor = document.createElement('a');
@@ -709,21 +826,20 @@
                 try {
                     const imported = JSON.parse(e.target.result);
                     if (typeof imported === 'object' && imported !== null) {
-                        records = imported;
-                        localStorage.setItem('earth_cleaning_records', JSON.stringify(records));
-                        alert('資料還原成功！');
-                        loadDateRecord();
+                        const stats = mergeRecordsByTimestamp(imported);
+                        alert(`智慧合併完成！\n• 新增天數：${stats.addedCount} 筆\n• 更新為較新版本：${stats.updatedCount} 筆\n• 保留本地較新版本：${stats.keptLocalCount} 筆`);
                     } else {
                         alert('檔案格式錯誤！');
                     }
                 } catch (err) {
                     alert('解析 JSON 失敗：' + err);
                 }
+                event.target.value = '';
             };
             reader.readAsText(file);
         }
 
-        // LZ-String 壓縮文字代碼功能
+        // LZ-String 壓縮文字代碼功能與智慧合併
         function generateCompressedCode() {
             if (Object.keys(records).length === 0) {
                 alert('目前沒有任何記錄可供產生代碼！');
@@ -767,10 +883,8 @@
                 }
                 const imported = JSON.parse(decompressed);
                 if (typeof imported === 'object' && imported !== null) {
-                    records = imported;
-                    localStorage.setItem('earth_cleaning_records', JSON.stringify(records));
-                    alert('透過代碼還原資料成功！');
-                    loadDateRecord();
+                    const stats = mergeRecordsByTimestamp(imported);
+                    alert(`智慧合併完成！\n• 新增天數：${stats.addedCount} 筆\n• 更新為較新版本：${stats.updatedCount} 筆\n• 保留本地較新版本：${stats.keptLocalCount} 筆`);
                     document.getElementById('import-code-box').value = '';
                 } else {
                     alert('代碼格式錯誤！');
